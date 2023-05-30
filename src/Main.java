@@ -97,3 +97,69 @@ public class laba4 {
 }
 
 
+import java.io.*;
+
+public class laba42 {
+    public static void main(String[] args) {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String filePath = null;
+
+        try {
+            System.out.print("Введіть шлях до текстового файлу: ");
+            filePath = reader.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (filePath == null || filePath.isEmpty()) {
+            System.out.println("Шлях до файлу не введено");
+            return;
+        }
+
+        File file = new File(filePath);
+
+        while (!file.exists() || file.isDirectory()) {
+            if (file.isDirectory()) {
+                System.out.println("Введений шлях відповідає папці, а не файлу");
+            } else {
+                System.out.println("Файл не існує");
+            }
+
+            try {
+                System.out.print("Введіть шлях до текстового файлу: ");
+                filePath = reader.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (filePath == null || filePath.isEmpty()) {
+                System.out.println("Шлях до файлу не введено");
+                return;
+            }
+
+            file = new File(filePath);
+        }
+
+        try (BufferedReader fileReader = new BufferedReader(new FileReader(file));
+             BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file, true))) {
+            int character;
+            int count = 0;
+
+            while ((character = fileReader.read()) != -1) {
+                if (!isIgnoredCharacter(character)) {
+                    count++;
+                }
+            }
+
+            System.out.println(file.getName() + ": " + count + " символів");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static boolean isIgnoredCharacter(int character) {
+        return character == ' ' || character == '\r' || character == '\n' || character == '\t';
+    }
+}
+
+
